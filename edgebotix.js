@@ -79,9 +79,9 @@
             //[' ', 'Turn LED on', 'block_led', 'on'],
             //[' ', 'Turn LED off', 'block_led', 'on'],
 
-            ['', 'wheels (left: %n , right: %n )', 'block_wheels', 1.00, 1.00],
-            ['', 'wheel_calibrate(left: %n , right: %n )', 'block_wheels_calibrate', 1.00, 1.00],
-            ['', 'buzzer %n %n', 'block_buzzer', 1000, 500],
+            ['', 'wheels(left: %n right: %n )', 'block_wheels', 1.00, 1.00],
+            ['', 'wheel_calibrate(left: %n right: %n )', 'block_wheels_calibrate', 1.00, 1.00],
+            ['', 'buzzer duration: %n (ms), freq: %n', 'block_buzzer', 1000, 500],
             ['', 'Imperial march', 'block_imperial_march'],
             ['', 'Halt', 'block_halt'],
 
