@@ -1,5 +1,3 @@
-var botix_listener = '127.0.0.1';
-
 (function(ext) {
     // Cleanup function when the extension is unloaded
     ext._shutdown = function() {};
@@ -19,14 +17,6 @@ var botix_listener = '127.0.0.1';
     };
 
     ext.block_led = function(led_state) {
-        $.ajax({
-            url: botix_listener,
-            dataType: 'jsonp',
-            success: function( weather_data ) {
-                temperature = weather_data['main']['temp'];
-                callback(temperature);
-            }
-        });
     };
 
     ext.block_wheels = function(left_wheel, right_wheel) {
