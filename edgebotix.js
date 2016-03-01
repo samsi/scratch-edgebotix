@@ -1,77 +1,19 @@
 (function(ext) {
-    var botixSocket;
-    var botixServer = '127.0.0.1';
-    var botixPort = 10000;
-    var botixStatus = 0;
+    // Cleanup function when the extension is unloaded
+    ext._shutdown = function() {};
 
-    var debugLevel = 0;
-
-    ext._shutdown = function() {
-
-
-    };
-
+    // Status reporting code
+    // Use this to report missing hardware, plugin or unsupported browser
     ext._getStatus = function() {
-        return {status: botixStatus, msg: 'Ready'};
+        return {status: 2, msg: 'Ready'};
     };
 
     ext.block_connect = function() {
-        var timeout;
 
-        var socket = new WebSocket('ws://' + botixServer + ':' + botixPort);
-        botixSocket =  {'ip': botixServer, 'port': botixPort, 'ws': socket});
-
-        // start the timer for a server reply - we wait for up to 2 seconds for the reply
-        timeout = window.setTimeout(noBotixServerAlert, 2000);
-
-        // attach an onopen handler to this socket. This message is sent by a servers websocket
-        socket.onopen = function (event) {
-            window.clearTimeout(timeout);
-            
-            if (debugLevel >= 1)
-                console.log('onopen message received');
-
-            socket.send('connect');
-            callback(); 
-        };
-
-        function noBotixServerAlert() {
-            
-        }
-
-        socket.onmessage = function (message) {
-            if (debugLevel === 1)
-                console.log('onmessage received: ' + message.data);
-
-            var msg = message.data.split('/');
-
-            switch (msg[0]) {
-                // dataUpdate - server data update data message
-                case 'dataUpdate':
-                    var index = msg[1]; // unique value used as an index into sensorDataArray
-                    var data = msg[2]; // data value to be entered into sensorDataArray
-                    if (debugLevel >= 2)
-                        console.log('sensorData: index = ' + index + ' data = ' + data);
-                    // update the array with the new value
-                    sensorDataArray[index].value = data;
-                    break;
-
-                // server detected a problem in setting the mode of this pin
-                case 'invalidSetMode':
-                case 'invalidPinCommand':
-                    console.log('invalid alerts:' + 'index: ' + msg[1] + 'board: ' + msg[2] + 'pin: ' + msg[3]);
-                    createAlert(msg[1], msg[2], msg[3]);
-                    break;
-                default:
-                    if (debugLevel >= 1)
-                        console.log('onmessage unknown message received');
-            }
-        };
     };
 
     ext.block_disconnect = function() {
-        var msg = 'disconnect';
-        sendCommand(msg, board, 'analogWrite');
+
     };
 
     ext.block_led = function(led_state) {
@@ -98,7 +40,7 @@
     };
 
     ext.block_get_temperature = function(callback) {
-        
+
     };
 
     ext.block_get_light = function(callback) {
@@ -124,17 +66,6 @@
     ext.block_get_acceleration = function(callback) {
 
     };
-
-    function sendBotixCommand(msg) {
-        if (debugLevel >= 1) {
-            console.log('sendCommand: ' + msg);
-        }
-        
-        if (botixSockets) {
-            botixSockets.ws.send(msg);
-            return;
-        }
-    }
 
     // Block and block menu descriptions
     var descriptor = {
