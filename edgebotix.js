@@ -15,22 +15,6 @@
     ext.block_connect = function(callback) {
         var timeout;
         
-        var socket = new WebSocket('ws://' + botixServer + ':' + botixPort);
-        botixSocket =  {'ip': botixServer, 'port': botixPort, 'ws': socket});
-        
-        // start the timer for a server reply - we wait for up to 2 seconds for the reply
-        timeout = window.setTimeout(noBotixServerAlert, 2000);
-        
-        // attach an onopen handler to this socket. This message is sent by a servers websocket
-        socket.onopen = function (event) {
-            window.clearTimeout(timeout);
-            
-            if (debugLevel >= 1)
-                console.log('onopen message received');
-        
-            socket.send('connect');
-            callback(); 
-        };
     };
 
     ext.block_disconnect = function() {
