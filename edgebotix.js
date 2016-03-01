@@ -1,15 +1,36 @@
 (function(ext) {
-    // Cleanup function when the extension is unloaded
+    var botixSocket;
+    var botixServer = '127.0.0.1';
+    var botixPort = 10000;
+    var botixStatus = 0;
+
+    var debugLevel = 0;
+
     ext._shutdown = function() {};
 
-    // Status reporting code
-    // Use this to report missing hardware, plugin or unsupported browser
     ext._getStatus = function() {
-        return {status: 2, msg: 'Ready'};
+        return {status: botixStatus, msg: 'Ready'};
     };
 
-    ext.block_connect = function() {
-
+    ext.block_connect = function(callback) {
+        var timeout;
+        
+        var socket = new WebSocket('ws://' + botixServer + ':' + botixPort);
+        botixSocket =  {'ip': botixServer, 'port': botixPort, 'ws': socket});
+        
+        // start the timer for a server reply - we wait for up to 2 seconds for the reply
+        timeout = window.setTimeout(noBotixServerAlert, 2000);
+        
+        // attach an onopen handler to this socket. This message is sent by a servers websocket
+        socket.onopen = function (event) {
+            window.clearTimeout(timeout);
+            
+            if (debugLevel >= 1)
+                console.log('onopen message received');
+        
+            socket.send('connect');
+            callback(); 
+        };
     };
 
     ext.block_disconnect = function() {
@@ -71,7 +92,7 @@
     var descriptor = {
         blocks: [
             // Block type, block name, function name
-            ['', 'Connect', 'block_connect'],
+            ['w', 'Connect', 'block_connect'],
             ['', 'Disconnect', 'block_disconnect'],
 
             // Output 
